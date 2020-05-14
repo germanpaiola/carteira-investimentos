@@ -32,8 +32,8 @@ public class UserServiceImplTest {
     public void deveAutenticarUmUsuario(){
         User user = UserRepositoryTest.createUser();
         Mockito.when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
-        boolean autenticado = userService.autenticarUsuario(user.getEmail(), user.getSenha());
-        Assertions.assertTrue(autenticado);
+        User autenticado = userService.autenticarUsuario(user.getEmail(), user.getSenha());
+        Assertions.assertTrue(autenticado == user);
     }
 
     @Test
@@ -41,7 +41,7 @@ public class UserServiceImplTest {
         User user = UserRepositoryTest.createUser();
         Mockito.when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.empty());
         try {
-            boolean autenticado = userService.autenticarUsuario(user.getEmail(), user.getSenha());
+            User autenticado = userService.autenticarUsuario(user.getEmail(), user.getSenha());
         }catch (RegraNegocioException e) {
             Assertions.assertEquals(e.getMessage(), "Usuário não encontrado.");
         }
@@ -53,7 +53,7 @@ public class UserServiceImplTest {
         Mockito.when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
         user.setSenha("321");
         try {
-            boolean autenticado = userService.autenticarUsuario(user.getEmail(), user.getSenha());
+            User autenticado = userService.autenticarUsuario(user.getEmail(), user.getSenha());
         }catch (RegraNegocioException e) {
             Assertions.assertEquals(e.getMessage(), "Senha incorreta.");
         }
@@ -75,6 +75,24 @@ public class UserServiceImplTest {
         }catch(RegraNegocioException e){
             Assertions.assertEquals(e.getMessage(),"Já existe usuário cadastrado com este email.");
         }
+    }
 
+    @Test
+    public void deveBuscarUmUsuarioPorId(){
+        User user = UserRepositoryTest.createUser();
+        Mockito.when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(user));
+        User userSalvo = userService.buscarPorId(1L);
+        Assertions.assertEquals(user.toString(), userSalvo.toString());
+    }
+
+    @Test
+    public void deveDarRegraDeNegocioExceptionAoBuscarUsuarioPorIdENaoEncontrar(){
+        User user = UserRepositoryTest.createUser();
+        Mockito.when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
+        try {
+            User userSalvo = userService.buscarPorId(1L);
+        }catch (Exception e) {
+            Assertions.assertEquals(e.getMessage(), "Usuário não encontrado.");
+        }
     }
 }

@@ -27,7 +27,7 @@ public class UserController {
                 .build();
         try{
             userService.cadastrarUsuario(user);
-        }catch (Exception e){
+        }catch (RegraNegocioException e){
             return ResponseEntity.badRequest().body(e);
         }
         return ResponseEntity.ok(user);

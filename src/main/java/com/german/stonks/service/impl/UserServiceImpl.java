@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService {
     public User buscarPorId(Long id){
         Optional<User> optionalUser = userRepository.findById(id);
         if(optionalUser.isEmpty())
-            throw new RegraNegocioException("Usuário não encontrado");
+            throw new RegraNegocioException("Usuário não encontrado.");
         return optionalUser.get();
     }
 }

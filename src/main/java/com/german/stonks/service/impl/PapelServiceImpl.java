@@ -75,7 +75,7 @@ public class PapelServiceImpl implements PapelService {
     public Papel buscarPorId(Long id) {
         Optional<Papel> optionalPapel = papelRepository.findById(id);
         if(optionalPapel.isEmpty())
-            throw new RegraNegocioException("Papel não encontrado");
+            throw new RegraNegocioException("Papel não encontrado.");
         return optionalPapel.get();
     }
 }

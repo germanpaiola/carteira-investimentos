@@ -120,13 +120,13 @@ public class PapelServiceImplTest {
         papelSalvo.setUser(user);
 
         Mockito.when(papelRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(papelSalvo));
-        boolean vendido = papelService.venderPapel(papel);
+        Papel vendido = papelService.venderPapel(papel);
 
         Mockito.verify(papelRepository, Mockito.times(1)).updatePapel(Mockito.anyInt(),
                                                                             Mockito.anyDouble(),
                                                                             Mockito.anyString(),
                                                                             Mockito.anyLong());
-        Assertions.assertTrue(vendido);
+        Assertions.assertTrue(vendido == papel);
     }
 
     @Test
@@ -139,9 +139,35 @@ public class PapelServiceImplTest {
         papelSalvo.setUser(user);
 
         Mockito.when(papelRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(papelSalvo));
-        boolean vendido = papelService.venderPapel(papel);
+        Papel vendido = papelService.venderPapel(papel);
 
         Mockito.verify(papelRepository, Mockito.times(1)).delete(papelSalvo);
-        Assertions.assertTrue(vendido);
+        Assertions.assertTrue(vendido == papel);
+    }
+
+    @Test
+    public void deveRetornarPapelPorId(){
+        User user = UserRepositoryTest.createUser();
+        Papel papel = PapelRepositoryTest.createPapel();
+        papel.setUser(user);
+
+        Mockito.when(papelRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(papel));
+        Papel papelSalvo = papelService.buscarPorId(1l);
+
+        Assertions.assertEquals(papel.toString(), papelSalvo.toString());
+    }
+
+    @Test
+    public void deveRetornarRegraDeNegocioExceptionSeNaoEncontrarUmPapelPorId(){
+        User user = UserRepositoryTest.createUser();
+        Papel papel = PapelRepositoryTest.createPapel();
+        papel.setUser(user);
+
+        Mockito.when(papelRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
+        try {
+            Papel papelSalvo = papelService.buscarPorId(1l);
+        }catch(Exception e){
+            Assertions.assertEquals(e.getMessage(), "Papel não encontrado.");
+        }
     }
 }
