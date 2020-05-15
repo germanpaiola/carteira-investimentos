@@ -46,11 +46,6 @@ public class UserServiceImpl implements UserService {
         return true;
     }
 
-    @Override
-    public double verSaldo(User user) {
-        return user.getSaldo();
-    }
-
     public User buscarPorId(Long id){
         Optional<User> optionalUser = userRepository.findById(id);
         if(optionalUser.isEmpty())
